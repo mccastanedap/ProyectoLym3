@@ -1,0 +1,77 @@
+using gold.structures.automaton.*
+using gold.visualization.automaton.*
+procedure main(args:String[]) begin
+	GAutomataFrame.show(createAutomaton())
+end
+
+function createAutomaton():IPushdownAutomaton begin
+	Q:={"R","V","B","a","m","D","T","x","C","O","z",
+	"s","e","W","U","t","f","p","E","n","F","R","L",
+	"r","k","N","i","h","l","w","d","r","I", "g","u",
+	"o","c","v", "P","K","Y"}
+	Σ:={'R','V','B','a','m','D','T','x','C','O','z','s',
+	'e','W','U','t','f','p','E','n','F','R','L','r','k',
+	'N','i','h','l','w','d','r','I', 'g','u','o','c','v',
+	'P','K','$'}
+	Γ:={'N', 'B', 'a', 'n'}
+	q₀:="I"
+	F:={"I", "E"}
+	
+	M:=GPushdownAutomaton(Q,Σ,Γ,q₀,F)
+	M.delta("I", "R", "R").ignore()
+	M.delta("R", "V", "V").ignore()
+	M.delta("V", "N", "N").push("N")
+	M.delta("N", "N", "N").push("N")
+	M.delta("N", "B", "B").push("B")
+	M.delta("R", "B", "B").push("B")
+	
+	M.delta("B", "m", "m").ignore()
+	M.delta("B", "t", "t").ignore()
+	M.delta("B", "f", "f").ignore()
+	M.delta("B", "P", "P").ignore()
+	M.delta("B", "p", "p").ignore()
+	
+	M.delta("B", "a", "a").push("a")
+	M.delta("a", "n", "n").push("n")
+	M.delta("n", "U", "U").pop("n")
+	M.delta("U", "Y", "N").pop("a")
+	M.delta("Y", "a", "a").push("a")
+
+	M.delta("Y", "m", "m").ignore()
+	M.delta("m", "Y", "N").ignore()
+	M.delta("m", "Y", "n").ignore()
+	M.delta("Y", "t", "t").ignore()
+	M.delta("t", "Y", "L").ignore()
+	M.delta("t", "Y", "R").ignore()
+	M.delta("t", "Y", "r").ignore()
+	M.delta("Y", "f", "f").ignore()
+	M.delta("f", "Y", "W").ignore()
+	M.delta("f", "Y", "s").ignore()
+	M.delta("f", "Y", "e").ignore()
+	M.delta("f", "Y", "z").ignore()
+	M.delta("Y", "P", "P").ignore()
+	M.delta("P", "Y", "N").ignore()
+	M.delta("P", "Y", "n").ignore()
+	M.delta("n", "o", "o").ignore()
+	M.delta("N", "o", "o").ignore()
+	M.delta("o", "O", "O").ignore()
+	M.delta("o", "C", "C").ignore()
+	M.delta("Y", "p", "p").ignore()
+	M.delta("p", "Y", "N").ignore()
+	M.delta("p", "Y", "n").ignore()
+	M.delta("n", "T", "T").ignore()
+	M.delta("N", "T", "T").ignore()
+	M.delta("T", "F", "F").ignore()
+	M.delta("T", "R", "R").ignore()
+	M.delta("T", "L", "L").ignore()
+	M.delta("T", "K", "K").ignore()
+	
+	M.delta("Y", "E", "E").pop("B")
+	M.delta("E", "E",λ ).pop("N")
+	
+	
+	
+	return M
+end
+
+
